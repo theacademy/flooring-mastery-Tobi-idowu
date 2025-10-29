@@ -1,7 +1,7 @@
 package com.mthree.tobiidowu.flooringMastery.model;
 
 import java.math.BigDecimal;
-
+import java.time.LocalDate;
 
 public class Order {
     private Integer orderNumber;
@@ -16,6 +16,7 @@ public class Order {
     private BigDecimal laborCost;
     private BigDecimal tax;
     private BigDecimal total;
+    private LocalDate date;
 
     // getters and setters
     public Integer getOrderNumber() {
@@ -112,5 +113,13 @@ public class Order {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }
