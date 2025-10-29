@@ -12,7 +12,7 @@ public interface ServiceLayer {
 
     public void addOrder(Order order) throws PersistenceException;
 
-    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException;
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException, NoSuchOrderException;
 
     public void calculateOrderAttributes(Order order) throws PersistenceException;
 

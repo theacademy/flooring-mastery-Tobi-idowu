@@ -63,7 +63,7 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     public void displayOrder(Order order) {
-        String output = order.getOrderNumber() + "," + order.getCustomerName() + "," + order.getState() + "," +
+        String output = order.getCustomerName() + "," + order.getState() + "," +
                 order.getTaxRate() + "," + order.getProductType() + "," + order.getArea() + "," +
                 order.getCostPerSquareFoot() + "," + order.getLaborCostPerSquareFoot() + "," +
                 order.getMaterialCost() + "," + order.getLaborCost() + "," + order.getTax() + "," +

@@ -32,7 +32,7 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     public void addOrder(Order order) throws PersistenceException {
-        // find id first then add to file
+        // find next order number
         try (RandomAccessFile file = new RandomAccessFile(largestOrderNumberFile, "rw")) {
             // read the current largest order number (if file doesnt exist set it to 0)
             String line = file.readLine();
@@ -44,10 +44,10 @@ public class OrderDaoFileImpl implements OrderDao {
             // write order to correct file
             writeOrderToFile(order);
 
-            // increment it
+            // increment order number
             currentNumber++;
 
-            // seek to beginning and write back
+            // seek to beginning and write back new order number
             file.seek(0);
             file.writeBytes(String.valueOf(currentNumber));
             file.setLength(String.valueOf(currentNumber).length());
@@ -57,24 +57,30 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException {
+        // get the corresponding orders file
         File orderFile = getOrderFileFromDate(date);
 
         if (!orderFile.exists()) {
             return null;
         }
 
+        // read the file line by line
         try (BufferedReader reader = new BufferedReader(new FileReader(orderFile))) {
             // skip header line
             reader.readLine();
 
             String line;
+
+            // read each line of the file and parse it as an order
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) {
                     continue;
                 }
 
+                // parse the current line as an order
                 Order order = parseOrderFromCsv(line, date);
 
+                // if the order is found, return it
                 if (order != null && order.getOrderNumber() == orderNumber) {
                     return order;
                 }
@@ -87,38 +93,47 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     public void editOrder(Order newOrder) throws PersistenceException {
+        // get the order date
         LocalDate date = newOrder.getDate();
+
         if (date == null) {
             throw new PersistenceException("Order date is required");
         }
 
+        // convert the new order to a csv string
         String replacementLine = formatOrderAsCsv(newOrder);
 
+        // replace the old order with the new one
         modifyOrderInFile(date, newOrder.getOrderNumber(), replacementLine, "editing order");
     }
 
     public List<Order> getOrdersForDate(LocalDate date) throws PersistenceException {
+        // get the corresponding orders file
         File orderFile = getOrderFileFromDate(date);
 
+        // create a list to store the orders
         List<Order> orders = new LinkedList<>();
 
-        // if file doesn't exist, return empty list
         if (!orderFile.exists()) {
             return orders;
         }
 
+        // read the file line by line
         try (BufferedReader reader = new BufferedReader(new FileReader(orderFile))) {
             // skip header line
             reader.readLine();
 
             String line;
+
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) {
                     continue;
                 }
 
+                // parse the current line as an order
                 Order order = parseOrderFromCsv(line, date);
 
+                // add order to list
                 if (order != null) {
                     orders.add(order);
                 }
@@ -131,20 +146,25 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     public void removeOrder(LocalDate date, int orderNumber) throws PersistenceException {
+        // replace the orders line with null (remove the order)
         modifyOrderInFile(date, orderNumber, null, "removing order");
     }
 
     private void writeOrderToFile(Order order) throws PersistenceException {
+        // get the order date
         LocalDate date = order.getDate();
 
         if (date == null) {
             throw new PersistenceException("Order date is required");
         }
 
+        // get the corresponding orders file
         File orderFile = getOrderFileFromDate(date);
 
+        // check if the file exists
         boolean fileExists = orderFile.exists();
 
+        // write the order to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(orderFile, true))) {
             // write header if file is new
             if (!fileExists) {
@@ -164,6 +184,7 @@ public class OrderDaoFileImpl implements OrderDao {
 
     private void modifyOrderInFile(LocalDate date, Integer targetOrderNumber, String replacementLine, String operation)
             throws PersistenceException {
+        // get the corresponding orders file
         File orderFile = getOrderFileFromDate(date);
         String fileName = orderFile.getPath();
 
@@ -175,10 +196,13 @@ public class OrderDaoFileImpl implements OrderDao {
         File tempFile = new File(fileName + ".tmp");
         boolean orderFound = false;
 
+        // read the file line by line and write to temp file
         try (BufferedReader reader = new BufferedReader(new FileReader(orderFile));
                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
 
             String line;
+
+            // read each line of the file and parse it as an order
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) {
                     continue;
@@ -189,18 +213,19 @@ public class OrderDaoFileImpl implements OrderDao {
                     writer.write(line);
                     writer.newLine();
                 } else {
+                    // parse the current line as an order
                     Order order = parseOrderFromCsv(line, date);
 
+                    // if the order is found, replace or skip based on replacementLine
                     if (order != null && order.getOrderNumber() != null
                             && order.getOrderNumber().equals(targetOrderNumber)) {
-                        // order matches - replace or skip based on replacementLine
                         if (replacementLine != null) {
-                            // edit: write replacement line
+                            // for edit, write replacement line
                             writer.write(replacementLine);
                             writer.newLine();
                         }
 
-                        // remove: skip writing (replacementLine is null)
+                        // for remove, skip writing (replacementLine is null)
                         orderFound = true;
                     } else {
                         // keep existing line
@@ -217,6 +242,7 @@ public class OrderDaoFileImpl implements OrderDao {
             throw new PersistenceException("Error " + operation + ": " + e.getMessage());
         }
 
+        // if the order is not found, make no changes orders file
         if (!orderFound) {
             tempFile.delete();
 
@@ -238,10 +264,12 @@ public class OrderDaoFileImpl implements OrderDao {
         String dateStr = String.format("%02d%02d%04d", date.getMonthValue(), date.getDayOfMonth(), date.getYear());
         String fileName = orderFolder + "/Orders_" + dateStr + ".txt";
 
+        // return the corresponding orders file
         return new File(fileName);
     }
 
     private String formatOrderAsCsv(Order order) {
+        // convert the order to a csv string
         return order.getOrderNumber() + "," +
                 order.getCustomerName() + "," +
                 order.getState() + "," +
@@ -257,13 +285,17 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     private Order parseOrderFromCsv(String csvLine, LocalDate date) {
-        try {
-            String[] fields = csvLine.split(",");
-            if (fields.length != 12) {
-                return null;
-            }
+        
+        String[] fields = csvLine.split(",");
 
+        if (fields.length != 12) {
+            return null;
+        }
+
+        try {
             Order order = new Order();
+
+            // parse the current line as an order
             order.setOrderNumber(Integer.parseInt(fields[0].trim()));
             order.setCustomerName(fields[1].trim());
             order.setState(fields[2].trim());

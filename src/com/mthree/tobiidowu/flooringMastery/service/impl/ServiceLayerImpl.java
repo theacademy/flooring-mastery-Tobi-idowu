@@ -9,6 +9,7 @@ import com.mthree.tobiidowu.flooringMastery.model.Order;
 import com.mthree.tobiidowu.flooringMastery.model.Product;
 import com.mthree.tobiidowu.flooringMastery.model.Tax;
 import com.mthree.tobiidowu.flooringMastery.exception.PersistenceException;
+import com.mthree.tobiidowu.flooringMastery.exception.NoSuchOrderException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.LinkedList;
@@ -39,8 +40,14 @@ public class ServiceLayerImpl implements ServiceLayer {
         orderDao.addOrder(order);
     }
 
-    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException {
-        return orderDao.getOrder(date, orderNumber);
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException, NoSuchOrderException {
+        Order order = orderDao.getOrder(date, orderNumber);
+
+        if (order == null) {
+            throw new NoSuchOrderException("Order not found.");
+        }
+
+        return order;
     }
 
     public void calculateOrderAttributes(Order order) throws PersistenceException {

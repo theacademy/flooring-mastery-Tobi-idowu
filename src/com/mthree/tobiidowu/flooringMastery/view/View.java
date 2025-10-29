@@ -46,8 +46,10 @@ public class View {
         LocalDate dateObj;
 
         while (true) {
-            String date = io.readString("Please enter a date in the MM/DD/YYYY format: ");
+            // get date from user
+            String date = io.readString("\nPlease enter a date in the MM/DD/YYYY format: ");
 
+            // check for proper formatting
             String[] splitDate = date.split("/");
 
             if (splitDate.length != 3) {
@@ -55,10 +57,12 @@ public class View {
             }
 
             try {
+                // confirm date exists
                 int month = Integer.parseInt(splitDate[0]);
                 int day = Integer.parseInt(splitDate[1]);
                 int year = Integer.parseInt(splitDate[2]);
 
+                // create date object
                 dateObj = LocalDate.of(year, month, day);
 
                 return dateObj;
@@ -86,13 +90,14 @@ public class View {
     }
 
     public void displayOrdersList(List<Order> orders) {
-        if (orders == null || orders.isEmpty()) {
+        if (orders.isEmpty()) {
             io.print("\nNo orders found for this date.\n");
             return;
         }
 
         io.print("\n=== Orders ===");
 
+        // display each order
         for (Order order : orders) {
             displayOrderInfo(order);
         }
@@ -103,11 +108,15 @@ public class View {
         io.print("\n=== Add Order ===\n");
     }
 
-    public LocalDate getOrderDateInput() {
+    public LocalDate getAddOrderDateInput() {
         while (true) {
+            // get date from user
             LocalDate date = getDateInput();
+
+            // get current date
             LocalDate today = LocalDate.now();
 
+            // check if date is in the future
             if (date.isAfter(today)) {
                 return date;
             } else {
@@ -158,8 +167,10 @@ public class View {
     public boolean confirmAddOrder(Order order) {
         io.print("\n=== Confirm Add Order ===");
 
+        // display order details
         displayOrderInfo(order);
 
+        // get confirmation from user
         int choice = io.readInt("Place this order?\n1. Yes\n2. No\nChoice: ", 1, 2);
 
         return choice == 1;
@@ -175,9 +186,11 @@ public class View {
     }
 
     public Order getEditOrderInput() {
+        // get date and order number from user
         LocalDate date = getDateInput();
         int orderNumber = getOrderNumberInput();
 
+        // add details to order object
         Order potentialOrder = new Order();
 
         potentialOrder.setOrderNumber(orderNumber);
@@ -189,20 +202,21 @@ public class View {
     public Order getEditOrderInput(Order existingOrder, List<Tax> taxes, List<Product> products) {
         Order edited = new Order();
 
-        edited.setOrderNumber(existingOrder.getOrderNumber());
-
-        // Customer Name
+        // get valid customer name
         String maybeName = getNameInput("Enter customer name (" + existingOrder.getCustomerName() + "): ", true);
 
-        // State
+        // get valid state
         Tax maybeTax = getStateInput("Enter state abbreviation (" + existingOrder.getState() + "): ", taxes, true);
 
-        // Product Type
+        // get valid product type
         Product maybeProduct = getProductInput("Enter product type (" + existingOrder.getProductType() + "): ",
                 products, true);
 
-        // Area
+        // get valid area
         BigDecimal maybeArea = getAreaInput("Enter area (" + existingOrder.getArea() + " sq ft): ", true);
+
+        // set order number
+        edited.setOrderNumber(existingOrder.getOrderNumber());
 
         // set name
         if (maybeName == null) {
@@ -246,6 +260,7 @@ public class View {
 
         io.print("\nOld order:");
         displayOrderInfo(old);
+
         io.print("\nNew order:");
         displayOrderInfo(new_);
 
@@ -264,11 +279,13 @@ public class View {
     }
 
     public Order getRemoveOrderInput() {
+        // get date and order number from user
         LocalDate date = getDateInput();
         int orderNumber = getOrderNumberInput();
 
         Order potentialOrder = new Order();
 
+        // add details to order object
         potentialOrder.setOrderNumber(orderNumber);
         potentialOrder.setDate(date);
 
@@ -278,8 +295,10 @@ public class View {
     public boolean getRemoveOrderConfirmation(Order order) {
         io.print("\n=== Confirm Remove Order ===");
 
+        // display order details
         displayOrderInfo(order);
 
+        // get confirmation from user
         int choice = io.readInt("Remove this order?\n1. Yes\n2. No\nChoice: ", 1, 2);
 
         return choice == 1;
@@ -293,6 +312,7 @@ public class View {
     public boolean getExportDataConfirmation() {
         io.print("\n=== Confirm Export Data ===");
 
+        // get confirmation from user
         int choice = io.readInt("Export all order data?\n1. Yes\n2. No\nChoice: ", 1, 2);
 
         return choice == 1;
@@ -315,6 +335,7 @@ public class View {
     // validate methods
     private String getNameInput(String prompt, boolean allowEmpty) {
         while (true) {
+            // get input from user
             String input = io.readString(prompt);
             String trimmed = input.trim();
 
@@ -326,6 +347,7 @@ public class View {
                 continue;
             }
 
+            // check if input is valid
             if (trimmed.matches("[a-zA-Z0-9., ]+")) {
                 return trimmed;
             }
@@ -336,8 +358,8 @@ public class View {
 
     private Tax getStateInput(String prompt, List<Tax> taxes, boolean allowEmpty) {
         while (true) {
+            // get input from user
             String input = io.readString(prompt);
-
             String abbr = input.trim();
 
             if (abbr.isEmpty()) {
@@ -348,9 +370,10 @@ public class View {
                 continue;
             }
 
-            for (Tax t : taxes) {
-                if (t.getState().equalsIgnoreCase(abbr)) {
-                    return t;
+            // validate state
+            for (Tax tax : taxes) {
+                if (tax.getState().equalsIgnoreCase(abbr)) {
+                    return tax;
                 }
             }
 
@@ -360,8 +383,8 @@ public class View {
 
     private Product getProductInput(String prompt, List<Product> products, boolean allowEmpty) {
         while (true) {
+            // get input from user
             String input = io.readString(prompt);
-
             String name = input.trim();
 
             if (name.isEmpty()) {
@@ -372,9 +395,10 @@ public class View {
                 continue;
             }
 
-            for (Product p : products) {
-                if (p.getProductType().equalsIgnoreCase(name)) {
-                    return p;
+            // validate product
+            for (Product product : products) {
+                if (product.getProductType().equalsIgnoreCase(name)) {
+                    return product;
                 }
             }
 
@@ -384,8 +408,8 @@ public class View {
 
     private BigDecimal getAreaInput(String prompt, boolean allowEmpty) {
         while (true) {
+            // get input from user
             String input = io.readString(prompt);
-
             String s = input.trim();
 
             if (s.isEmpty()) {
@@ -395,15 +419,16 @@ public class View {
                 io.print("Area must be a valid number and at least 100.0 square feet. Please try again.");
                 continue;
             }
+            // validate area
             try {
-                BigDecimal value = new BigDecimal(s);
+                BigDecimal area = new BigDecimal(s);
 
-                if (value.compareTo(BigDecimal.valueOf(100)) < 0) {
+                if (area.compareTo(BigDecimal.valueOf(100)) < 0) {
                     io.print("Area must be a valid number and at least 100.0 square feet. Please try again.");
                     continue;
                 }
 
-                return value;
+                return area;
             } catch (Exception e) {
                 io.print("Area must be a valid number and at least 100.0 square feet. Please try again.");
             }

@@ -24,7 +24,9 @@ public class Controller {
     public void run() {
         boolean programRunning = true;
 
+        // main loop
         while (programRunning) {
+            // get menu selection
             int menuSelection = getMenuSelection();
 
             switch (menuSelection) {
@@ -56,10 +58,14 @@ public class Controller {
     }
 
     private void displayOrders() {
+        // get date from user
         LocalDate date = view.getDisplayOrdersInput();
+
         try {
+            // get all orders for given date
             List<Order> orders = service.getOrdersForDate(date);
 
+            // display orders
             view.displayOrdersList(orders);
         } catch (PersistenceException e) {
             view.displayErrorMessage("Error getting orders for date: " + e.getMessage());
@@ -67,25 +73,33 @@ public class Controller {
     }
 
     private void addOrder() {
+        // display ui banner
         view.displayAddOrderBanner();
 
-        LocalDate date = view.getOrderDateInput();
+        // get order date from user
+        LocalDate date = view.getAddOrderDateInput();
 
         try {
+            // get all taxes and products
             List<Tax> taxes = service.getTaxes();
             List<Product> products = service.getProducts();
 
+            // get new order input from user
             Order newOrder = view.getAddOrderInput(taxes, products);
             newOrder.setDate(date);
 
+            // calculate order attributes
             service.calculateOrderAttributes(newOrder);
 
+            // confirm add order
             if (!view.confirmAddOrder(newOrder)) {
                 return;
             }
 
+            // persist the new order
             service.addOrder(newOrder);
 
+            // display success message
             view.displayAddOrderSuccess();
         } catch (PersistenceException e) {
             view.displayErrorMessage("Error adding order: " + e.getMessage());
@@ -93,27 +107,42 @@ public class Controller {
     }
 
     private void editOrder(Order old, Order new_) {
+        // display ui banner
         view.displayEditOrderBanner();
 
+        // get order to edit from user
         Order potentialOrder = view.getEditOrderInput();
 
         try {
+            // get full order details
             Order existingOrder = service.getOrder(potentialOrder.getDate(), potentialOrder.getOrderNumber());
 
+            if (existingOrder == null) {
+                view.displayErrorMessage("Order not found.");
+                return;
+            }
+
+            // get all taxes and products
             List<Tax> taxes = service.getTaxes();
             List<Product> products = service.getProducts();
 
+            // get edited order input from user
             Order editedOrder = view.getEditOrderInput(existingOrder, taxes, products);
 
+            // calculate order attributes
             service.calculateOrderAttributes(editedOrder);
 
+            // confirm edit order
             if (!view.confirmEditOrder(existingOrder, editedOrder)) {
                 return;
             }
 
+            // persist the edited order
             service.editOrder(editedOrder);
 
+            // display success message
             view.displayEditOrderSuccess();
+
         } catch (PersistenceException e) {
             view.displayErrorMessage("Error editing order: " + e.getMessage());
         } catch (NoSuchOrderException e) {
@@ -122,19 +151,27 @@ public class Controller {
     }
 
     private void removeOrder(Order order) {
+        // display ui banner
         view.displayRemoveOrderBanner();
 
+        // get order to remove from user
         Order potentialOrder = view.getRemoveOrderInput();
 
         try {
+            // get full order details
             Order existingOrder = service.getOrder(potentialOrder.getDate(), potentialOrder.getOrderNumber());
 
+            // get confirmation from user
             if (!view.getRemoveOrderConfirmation(potentialOrder)) {
                 return;
             }
+            
+            // remove the order
             service.removeOrder(potentialOrder);
 
+            // display success message
             view.displayRemoveOrderSuccess();
+
         } catch (PersistenceException e) {
             view.displayErrorMessage("Error removing order: " + e.getMessage());
         } catch (NoSuchOrderException e) {
@@ -143,14 +180,18 @@ public class Controller {
     }
 
     private void exportOrder() {
+        // get confirmation from user
         if (!view.getExportDataConfirmation()) {
             return;
         }
 
         try {
+            // export data
             service.exportData();
 
+            // display success message
             view.exportDataSuccessMessage();
+            
         } catch (PersistenceException e) {
             view.displayErrorMessage("Error exporting data: " + e.getMessage());
         }
