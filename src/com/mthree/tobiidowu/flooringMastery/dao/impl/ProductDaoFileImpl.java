@@ -17,7 +17,7 @@ public class ProductDaoFileImpl implements ProductDao {
         this.products = null;
     }
 
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws PersistenceException {
         return new LinkedList<>();
     }
 }

@@ -12,6 +12,7 @@ import com.mthree.tobiidowu.flooringMastery.exception.PersistenceException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.LinkedList;
+import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,38 +32,61 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     public List<Order> getOrdersForDate(LocalDate date) throws PersistenceException {
-        return new LinkedList<>();
+        return orderDao.getOrdersForDate(date);
     }
 
     public void addOrder(Order order) throws PersistenceException {
-        return;
+        orderDao.addOrder(order);
     }
 
     public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException {
-        return null;
+        return orderDao.getOrder(date, orderNumber);
     }
 
     public void calculateOrderAttributes(Order order) throws PersistenceException {
-        return;
+        // Store all intermediate results in BigDecimal variables for clarity
+        BigDecimal area = order.getArea();
+        BigDecimal costPerSquareFoot = order.getCostPerSquareFoot();
+        BigDecimal laborCostPerSquareFoot = order.getLaborCostPerSquareFoot();
+        BigDecimal taxRate = order.getTaxRate();
+
+        // Calculate material cost
+        BigDecimal materialCost = area.multiply(costPerSquareFoot);
+        order.setMaterialCost(materialCost);
+
+        // Calculate labor cost
+        BigDecimal laborCost = area.multiply(laborCostPerSquareFoot);
+        order.setLaborCost(laborCost);
+
+        // Calculate subtotal (material + labor)
+        BigDecimal subTotal = materialCost.add(laborCost);
+
+        // Calculate tax
+        BigDecimal tax = subTotal.multiply(taxRate);
+        order.setTax(tax);
+
+        // Calculate total
+        BigDecimal total = subTotal.add(tax);
+        order.setTotal(total);
     }
 
     public void editOrder(Order newOrder) throws PersistenceException {
-        return;
+        orderDao.editOrder(newOrder);
     }
 
     public void removeOrder(Order order) throws PersistenceException {
-        return;
+        orderDao.removeOrder(order.getDate(), order.getOrderNumber());
     }
 
     public void exportData() throws PersistenceException {
-        return;
-    }
-
-    public Tax getTax(String state) throws PersistenceException {
-        return null;
+        exportDao.exportData();
     }
 
     public List<Product> getProducts() throws PersistenceException {
-        return new LinkedList<>();
+        return productDao.getAllProducts();
+    }
+
+    public List<Tax> getTaxes() throws PersistenceException {
+        return taxDao.getAllTaxes();
     }
 }

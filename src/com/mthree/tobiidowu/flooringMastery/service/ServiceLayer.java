@@ -22,7 +22,7 @@ public interface ServiceLayer {
 
     public void exportData() throws PersistenceException;
 
-    public Tax getTax(String state) throws PersistenceException;
-
     public List<Product> getProducts() throws PersistenceException;
+
+    public List<Tax> getTaxes() throws PersistenceException;
 }

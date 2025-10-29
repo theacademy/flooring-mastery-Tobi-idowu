@@ -19,23 +19,24 @@ public class OrderDaoFileImpl implements OrderDao {
                 "LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Order order) throws PersistenceException {
+        // find id first then add to file
         return;
     }
 
-    public Order getOrder(LocalDate date, int orderNumber) {
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException {
         return null;
     }
 
-    public void editOrder(Order new_) {
+    public void editOrder(Order new_) throws PersistenceException {
         return;
     }
 
-    public List<Order> getOrdersForDate(LocalDate date) {
+    public List<Order> getOrdersForDate(LocalDate date) throws PersistenceException {
         return new LinkedList<>();
     }
 
-    public void removeOrder(LocalDate date, int orderNumber) {
+    public void removeOrder(LocalDate date, int orderNumber) throws PersistenceException {
         return;
     }
 

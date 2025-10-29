@@ -17,7 +17,7 @@ public class TaxDaoFileImpl implements TaxDao {
         this.taxes = null;
     }
 
-    public List<Tax> getAllTaxes() {
+    public List<Tax> getAllTaxes() throws PersistenceException {
         return new LinkedList<>();
     }
 }
