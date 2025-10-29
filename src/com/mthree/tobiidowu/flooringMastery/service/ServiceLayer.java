@@ -14,7 +14,9 @@ public interface ServiceLayer {
 
     public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException;
 
-    public void editOrder(Order old, Order new_) throws PersistenceException;
+    public void calculateOrderAttributes(Order order) throws PersistenceException;
+
+    public void editOrder(Order newOrder) throws PersistenceException;
 
     public void removeOrder(Order order) throws PersistenceException;
 

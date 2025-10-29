@@ -79,6 +79,12 @@ public class View {
         io.displayOrder(order);
     }
 
+    public LocalDate getDisplayOrdersInput() {
+        LocalDate date = getDateInput();
+
+        return date;
+    }
+
     public void displayOrdersList(List<Order> orders) {
         if (orders == null || orders.isEmpty()) {
             io.print("\nNo orders found for this date.\n");
@@ -116,7 +122,6 @@ public class View {
 
         // get state
         Tax selectedTax = getStateInput("Enter state abbreviation: ", taxes, false);
-        String state = selectedTax.getState();
 
         // display available products
         io.print("\nAvailable products:");
@@ -132,16 +137,19 @@ public class View {
 
         // get product type
         Product selectedProduct = getProductInput("Enter product type: ", products, false);
-        String productType = selectedProduct.getProductType();
 
         // get area
         BigDecimal area = getAreaInput("Enter area in square feet, minimum 100.0 sq ft: ", false);
 
-        // Create Order with partial info
+        // Create Order with all available fields
         Order order = new Order();
+        
         order.setCustomerName(customerName);
-        order.setState(state);
-        order.setProductType(productType);
+        order.setState(selectedTax.getState());
+        order.setTaxRate(selectedTax.getTaxRate());
+        order.setProductType(selectedProduct.getProductType());
+        order.setCostPerSquareFoot(selectedProduct.getCostPerSquareFoot());
+        order.setLaborCostPerSquareFoot(selectedProduct.getLaborCostPerSquareFoot());
         order.setArea(area);
 
         return order;
@@ -196,14 +204,21 @@ public class View {
         // Area
         BigDecimal maybeArea = getAreaInput("Enter area (" + existingOrder.getArea() + " sq ft): ", true);
 
-
         // set name
-        edited.setCustomerName(maybeName);
+        if (maybeName == null) {
+            edited.setCustomerName(existingOrder.getCustomerName());
+        } else {
+            edited.setCustomerName(maybeName);
+        }
 
         // set area
-        edited.setArea(maybeArea);
+        if (maybeArea == null) {
+            edited.setArea(existingOrder.getArea());
+        } else {
+            edited.setArea(maybeArea);
+        }
 
-        // Set tax info if available
+        // Set tax info
         if (maybeTax != null) {
             edited.setState(maybeTax.getState());
             edited.setTaxRate(maybeTax.getTaxRate());
@@ -212,7 +227,7 @@ public class View {
             edited.setTaxRate(null);
         }
 
-        // Set product info if available
+        // Set product info
         if (maybeProduct != null) {
             edited.setProductType(maybeProduct.getProductType());
             edited.setCostPerSquareFoot(maybeProduct.getCostPerSquareFoot());
@@ -226,10 +241,13 @@ public class View {
         return edited;
     }
 
-    public boolean confirmEditOrder(Order order) {
+    public boolean confirmEditOrder(Order old, Order new_) {
         io.print("\n=== Confirm Edit Order ===");
 
-        displayOrderInfo(order);
+        io.print("\nOld order:");
+        displayOrderInfo(old);
+        io.print("\nNew order:");
+        displayOrderInfo(new_);
 
         int choice = io.readInt("Save these changes?\n1. Yes\n2. No\nChoice: ", 1, 2);
 
@@ -280,13 +298,13 @@ public class View {
         return choice == 1;
     }
 
-    public void displayExportDataSuccess() {
+    public void exportDataSuccessMessage() {
         io.print("\nData exported successfully!\n");
     }
 
     // quit method
     public void displayQuitMessage() {
-        io.print("\nThank you for using Flooring Mastery!\n");
+        io.print("\nHappy to help!\n");
     }
 
     // error method

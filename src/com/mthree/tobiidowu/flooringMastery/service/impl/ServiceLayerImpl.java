@@ -42,7 +42,11 @@ public class ServiceLayerImpl implements ServiceLayer {
         return null;
     }
 
-    public void editOrder(Order old, Order new_) throws PersistenceException {
+    public void calculateOrderAttributes(Order order) throws PersistenceException {
+        return;
+    }
+
+    public void editOrder(Order newOrder) throws PersistenceException {
         return;
     }
 
