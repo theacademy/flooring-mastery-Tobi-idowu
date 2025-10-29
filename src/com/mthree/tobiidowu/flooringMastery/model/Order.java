@@ -18,7 +18,6 @@ public class Order {
     private BigDecimal total;
 
     // getters and setters
-
     public Integer getOrderNumber() {
         return orderNumber;
     }

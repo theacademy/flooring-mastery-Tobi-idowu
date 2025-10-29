@@ -1,10 +1,11 @@
 package com.mthree.tobiidowu.flooringMastery.dao.impl;
 
 import com.mthree.tobiidowu.flooringMastery.dao.OrderDao;
-import com.mthree.tobiidowu.flooringmastery.model.Order;
+import com.mthree.tobiidowu.flooringMastery.model.Order;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.LinkedList;
+import org.springframework.stereotype.Component;
 
 @Component
 public class OrderDaoFileImpl implements OrderDao {
@@ -12,10 +13,10 @@ public class OrderDaoFileImpl implements OrderDao {
     private String orderHeader;
 
     // constructor
-    public orderDaoFileImpl () {
+    public OrderDaoFileImpl() {
         this.orderFolder = "/../../../../../../../Data/Orders";
         this.orderHeader = "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot," +
-                           "LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
+                "LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
     }
 
     public void addOrder(Order order) {

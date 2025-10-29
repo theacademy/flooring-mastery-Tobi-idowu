@@ -1,9 +1,10 @@
 package com.mthree.tobiidowu.flooringMastery.dao.impl;
 
 import com.mthree.tobiidowu.flooringMastery.dao.TaxDao;
-import com.mthree.tobiidowu.flooringmastery.model.Tax;
+import com.mthree.tobiidowu.flooringMastery.model.Tax;
 import java.util.List;
 import java.util.LinkedList;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TaxDaoFileImpl implements TaxDao {
@@ -12,7 +13,7 @@ public class TaxDaoFileImpl implements TaxDao {
 
     // constructor
     public TaxDaoFileImpl() {
-        this.taxFile = "/../../../../../../../Data/Lookup/Taxes.txt"
+        this.taxFile = "/../../../../../../../Data/Lookup/Taxes.txt";
         this.taxes = null;
     }
 

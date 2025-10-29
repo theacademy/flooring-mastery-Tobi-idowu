@@ -1,6 +1,6 @@
 package com.mthree.tobiidowu.flooringMastery.dao;
 
-import com.mthree.tobiidowu.flooringmastery.model.Order;
+import com.mthree.tobiidowu.flooringMastery.model.Order;
 import java.time.LocalDate;
 import java.util.List;
 

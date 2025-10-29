@@ -12,6 +12,8 @@ import com.mthree.tobiidowu.flooringMastery.exception.PersistenceException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.LinkedList;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class ServiceLayerImpl implements ServiceLayer {
@@ -28,35 +30,35 @@ public class ServiceLayerImpl implements ServiceLayer {
         this.exportDao = exportDao;
     }
 
-    public List<Order> getOrdersForDate(LocalDate date) throws PersistanceException {
+    public List<Order> getOrdersForDate(LocalDate date) throws PersistenceException {
         return new LinkedList<>();
     }
 
-    public void addOrder(Order order) throws PersistanceException {
+    public void addOrder(Order order) throws PersistenceException {
         return;
     }
 
-    public Order getOrder(LocalDate date, int orderNumber)  throws PersistanceException {
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException {
         return null;
     }
 
-    public void editOrder(Order old, Order new_) throws PersistanceException {
+    public void editOrder(Order old, Order new_) throws PersistenceException {
         return;
     }
 
-    public void removeOrder(Order order) throws PersistanceException {
+    public void removeOrder(Order order) throws PersistenceException {
         return;
     }
 
-    public void exportData() throws PersistanceException {
+    public void exportData() throws PersistenceException {
         return;
     }
 
-    public Tax getTax(String state) throws PersistanceException {
+    public Tax getTax(String state) throws PersistenceException {
         return null;
     }
 
-    public List<Product> getProducts() throws PersistanceException {
+    public List<Product> getProducts() throws PersistenceException {
         return new LinkedList<>();
     }
 }

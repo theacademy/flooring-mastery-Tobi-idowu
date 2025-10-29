@@ -8,19 +8,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ServiceLayer {
-    public List<Order> getOrdersForDate(LocalDate date) throws PersistanceException;
+    public List<Order> getOrdersForDate(LocalDate date) throws PersistenceException;
 
-    public void addOrder(Order order) throws PersistanceException;
+    public void addOrder(Order order) throws PersistenceException;
 
-    public Order getOrder(LocalDate date, int orderNumber)  throws PersistanceException;
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException;
 
-    public void editOrder(Order old, Order new_) throws PersistanceException;
+    public void editOrder(Order old, Order new_) throws PersistenceException;
 
-    public void removeOrder(Order order) throws PersistanceException;
+    public void removeOrder(Order order) throws PersistenceException;
 
-    public void exportData() throws PersistanceException;
+    public void exportData() throws PersistenceException;
 
-    public Tax getTax(String state) throws PersistanceException;
+    public Tax getTax(String state) throws PersistenceException;
 
-    public List<Product> getProducts() throws PersistanceException;
+    public List<Product> getProducts() throws PersistenceException;
 }

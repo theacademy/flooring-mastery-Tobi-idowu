@@ -1,9 +1,10 @@
 package com.mthree.tobiidowu.flooringMastery.dao.impl;
 
 import com.mthree.tobiidowu.flooringMastery.dao.ProductDao;
-import com.mthree.tobiidowu.flooringmastery.model.Product;
+import com.mthree.tobiidowu.flooringMastery.model.Product;
 import java.util.List;
 import java.util.LinkedList;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProductDaoFileImpl implements ProductDao {
@@ -12,7 +13,7 @@ public class ProductDaoFileImpl implements ProductDao {
 
     // constructor
     public ProductDaoFileImpl() {
-        this.productFile = "/../../../../../../../Data/Lookup/Products.txt"
+        this.productFile = "/../../../../../../../Data/Lookup/Products.txt";
         this.products = null;
     }
 

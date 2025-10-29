@@ -6,6 +6,8 @@ import com.mthree.tobiidowu.flooringMastery.model.Tax;
 import com.mthree.tobiidowu.flooringMastery.service.ServiceLayer;
 import com.mthree.tobiidowu.flooringMastery.view.View;
 import java.time.LocalDate;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class Controller {
