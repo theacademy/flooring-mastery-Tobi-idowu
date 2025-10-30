@@ -4,9 +4,10 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>flooringapp</artifactId>
+    <groupId>com.mthree.tobiidowu</groupId>
+    <artifactId>flooringMastery</artifactId>
     <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -27,6 +28,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.mthree.tobiidowu.flooringMastery.App</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
