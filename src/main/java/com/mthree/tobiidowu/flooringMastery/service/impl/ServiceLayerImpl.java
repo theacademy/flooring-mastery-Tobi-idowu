@@ -12,8 +12,8 @@ import com.mthree.tobiidowu.flooringMastery.exception.PersistenceException;
 import com.mthree.tobiidowu.flooringMastery.exception.NoSuchOrderException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.LinkedList;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,18 +58,19 @@ public class ServiceLayerImpl implements ServiceLayer {
         BigDecimal taxRate = order.getTaxRate();
 
         // Calculate material cost
-        BigDecimal materialCost = area.multiply(costPerSquareFoot);
+        BigDecimal materialCost = area.multiply(costPerSquareFoot).setScale(2, RoundingMode.HALF_UP);
         order.setMaterialCost(materialCost);
 
         // Calculate labor cost
-        BigDecimal laborCost = area.multiply(laborCostPerSquareFoot);
+        BigDecimal laborCost = area.multiply(laborCostPerSquareFoot).setScale(2, RoundingMode.HALF_UP);
         order.setLaborCost(laborCost);
 
         // Calculate subtotal (material + labor)
         BigDecimal subTotal = materialCost.add(laborCost);
 
-        // Calculate tax
-        BigDecimal tax = subTotal.multiply(taxRate);
+        // Calculate tax (taxRate is stored as percentage, divide by 100)
+        BigDecimal taxPercent = taxRate.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP);
+        BigDecimal tax = subTotal.multiply(taxPercent).setScale(2, RoundingMode.HALF_UP);
         order.setTax(tax);
 
         // Calculate total

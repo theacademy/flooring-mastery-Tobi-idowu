@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TaxDaoFileImpl implements TaxDao {
-    private String taxFile;
-    private List<Tax> taxes;
+    protected String taxFile;
+    protected List<Tax> taxes;
 
     // constructor
     public TaxDaoFileImpl() {

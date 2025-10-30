@@ -12,16 +12,15 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.LinkedList;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderDaoFileImpl implements OrderDao {
-    private String orderFolder;
-    private String orderHeader;
-    private String largestOrderNumberFile;
+    protected String orderFolder;
+    protected String orderHeader;
+    protected String largestOrderNumberFile;
 
     // constructor
     public OrderDaoFileImpl() {
@@ -285,7 +284,7 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     private Order parseOrderFromCsv(String csvLine, LocalDate date) {
-        
+
         String[] fields = csvLine.split(",");
 
         if (fields.length != 12) {

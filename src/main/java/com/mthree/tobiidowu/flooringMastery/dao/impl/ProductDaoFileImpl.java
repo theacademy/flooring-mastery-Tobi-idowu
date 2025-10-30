@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductDaoFileImpl implements ProductDao {
-    private String productFile;
-    private List<Product> products;
+    protected String productFile;
+    protected List<Product> products;
 
     // constructor
     public ProductDaoFileImpl() {
